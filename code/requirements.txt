@@ -1,4 +1,4 @@
-python-dotenv~=0.19.2
-tweepy~=4.6.0
+python-dotenv~=0.20.0
+tweepy~=4.8.0
 pandas~=1.4.1
 wordcloud~=1.8.1
