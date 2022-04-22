@@ -1,15 +1,14 @@
 import os
 import re
+import string
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import nltk
 import pandas as pd
 import tweepy
 from dotenv import load_dotenv
+from nltk import RegexpTokenizer
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from unidecode import unidecode
 from wordcloud import WordCloud
 
 load_dotenv()
@@ -44,10 +43,11 @@ def get_data(query: str, end_time: datetime, *args) -> tweepy.client.Response:
 
 def generate_data_frame(query_lang: str, limit: int = 10000) -> pd.DataFrame:
     """
-    Retorna um dataframe com base na pesquisa informada e o limite de registros, para evitar que tenha que ser executado diversas vezes é armazenado um .csv do dataframe
-    :param query_lang: str
-    :param limit: int por padrão 10000
-    :return: df: pandas.DataFrame
+        Retorna um dataframe com base na pesquisa informada e o limite de registros, para evitar que tenha que
+        ser executado diversas vezes é armazenado um .csv do dataframe
+        :param query_lang: str
+        :param limit: int por padrão 10000
+        :return: df: pandas.DataFrame
     """
 
     end_time: datetime = datetime.now()
@@ -59,6 +59,7 @@ def generate_data_frame(query_lang: str, limit: int = 10000) -> pd.DataFrame:
         for user, tweet in zip(users, response.data):
             row: dict = {
                 "user": user.name,
+                "user_id": user.id,
                 "text": tweet.text,
                 "created_at": tweet.created_at,
                 "retweet_count": tweet.public_metrics["retweet_count"],
@@ -74,34 +75,34 @@ def generate_data_frame(query_lang: str, limit: int = 10000) -> pd.DataFrame:
         except KeyError:
             break
 
-    df = pd.DataFrame(data)
+    df: pd.DataFrame = pd.DataFrame(data)
     df.to_csv(f"csvs/{query_lang.split(' ')[0]}_{end_time}.csv", ",")
     return df
 
 
-def show_word_cloud(df: pd.DataFrame, query_lang: str):
+def show_word_cloud(value_frequency: dict, text: str) -> None:
     """
-    Exibe nuvem de palavras a partir de um dataFrame que tenha uma coluna ['text']
-    :param query_lang: str
-    :param df: pandas.DataFrame
-    :return: none
+    Gera uma nuvem de palavras com base na frequencia informada no dict
+    :param value_frequency: dict
+    :param text: str
+    :return: None
     """
-    text = " ".join(item.split()[1] for item in df["text"])
     wordcloud = WordCloud(width=1000, height=1000,
                           background_color='white',
-                          stopwords=get_stopwords(query_lang),
-                          min_font_size=12).generate(text)
+                          stopwords=None,
+                          min_font_size=12).generate_from_frequencies(value_frequency)
 
     plt.figure(figsize=(8, 8), facecolor=None)
+    plt.title(text)
     plt.imshow(wordcloud)
     plt.axis("off")
-    plt.tight_layout(pad=0)
+    plt.tight_layout(w_pad=0)
     plt.show()
 
 
 def pre_processing(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
-    Recebe um dateFrame e o retorna ele mesmo com a coluna ['text'] pré-processada
+    Recebe um dateFrame e o retorna ele mesmo pré-processado
     :param data_frame: pandas.DataFrame
     :return: pandas.DataFrame
     """
@@ -111,43 +112,81 @@ def pre_processing(data_frame: pd.DataFrame) -> pd.DataFrame:
     df["text"] = df["text"].apply(lambda x: x.lower())
 
     # remove números e caracteres especiais
-    df["text"] = df["text"].apply(lambda x: re.sub('[0-9]|,|\.|/|$|\(|\)|-|\+|:|•', ' ', x))
+    df["text"] = df["text"].apply(lambda x: re.sub('[0-9]|,|\.|/|\(|\)|-|\+|:|•|\$', ' ', x))
 
     # remove acentos
-    df["text"] = df["text"].apply(lambda x: unidecode(x))
-
-    # stemming
-    stemmer = nltk.stem.RSLPStemmer()
-    df["text"] = df["text"].apply(lambda x: stemmer.stem(x))
+    df["text"] = df["text"].apply(
+        lambda x: ' '.join([word for word in x.split() if word not in string.punctuation]))
 
     # remove textos duplicados
     df = df.drop_duplicates(subset=["text"])
 
+    # remove coluna id
+    df.pop("id")
+
     return df
 
 
-def get_stopwords(query_lang: str) -> set:
+def tokenize(df: pd.DataFrame) -> list[str]:
     """
-    Gera e retorna a lista de stopwords em pt/br e adiciona a pesquisa a ela
+    Retorna coluna 'text' do dataframe tokenizada em uma lista de palavras
+    :param df: pd.DataFrame
+    :return: list[str]
+    """
+    tokenizer: RegexpTokenizer = RegexpTokenizer(r'[A-z]\w*')
+    tokens: list[str] = tokenizer.tokenize(df['text'].to_string())
+    return tokens
+
+
+def remove_stopwords(list_words: list[str], query_lang: str) -> list[str]:
+    """
+    Retorna lista de palavras sem as stopwords
+    :param list_words: list[str]
     :param query_lang: str
-    :return: set
+    :return: list[str]
+    """
+    tokens_without_sw = [word for word in list_words if word not in get_stopwords(query_lang)]
+    return tokens_without_sw
+
+
+def generate_value_of_words(df: pd.DataFrame, query_lang: str) -> tuple:
+    """
+    Recebe um dataframe com uma coluna chamada ['text'] e retorna a uma tupla com
+    as palavras e seus pesos levando em consideração outros atributos do df
+    :param query_lang: str
+    :param df: pd.Dataframe
+    :return: tuple
+    """
+    value_word_likes: dict[str: float] = {}
+    value_word_rt: dict[str: float] = {}
+    value_word_reply: dict[str: float] = {}
+    value_word_quote: dict[str: float] = {}
+    for i in df.index:
+        words: list[str] = df['text'][i].split(" ")
+        for word in words:
+            if word not in get_stopwords(query_lang):
+                if value_word_likes.get(word) is None:
+                    value_word_likes[word] = df['like_count'][i]
+                    value_word_rt[word] = df['retweet_count'][i]
+                    value_word_reply[word] = df['reply_count'][i]
+                    value_word_quote[word] = df['quote_count'][i]
+                else:
+                    rt, likes, reply, quote = value_word_rt.get(word), value_word_likes.get(word), value_word_reply.get(
+                        word), value_word_quote.get(word)
+                    value_word_likes[word] = df['like_count'][i] + rt
+                    value_word_rt[word] = df['retweet_count'][i] + likes
+                    value_word_reply[word] = df['reply_count'][i] + reply
+                    value_word_quote[word] = df['quote_count'][i] + quote
+    return value_word_likes, value_word_rt, value_word_reply, value_word_quote
+
+
+def get_stopwords(query_lang: str) -> list:
+    """
+    Retorna lista de stopwords incluindo o termo de pesquisa
+    :param query_lang: str
+    :return: list
     """
     stop_words: list = stopwords.words('portuguese')
-    stop_words.extend([query_lang.split(" ")[0]])
-    return set(stop_words)
-
-
-def generate_value_of_words(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Recebe um dataframe com uma coluna chamada ['text'] e retorna a matrix de frequencia de cada palavra
-    :param df: pd.Dataframe
-    :return: pd.Dataframe
-    """
-    cv: CountVectorizer = CountVectorizer()
-    text: str = " ".join(item.split()[1] for item in df["text"])
-    word_count_vector: list = cv.fit_transform(text.split(" "))
-    tfidf_transformer: TfidfTransformer = TfidfTransformer(smooth_idf=True, use_idf=True)
-    tfidf_transformer.fit(word_count_vector)
-    df_weight: pd.DataFrame = pd.DataFrame(tfidf_transformer.idf_, index=cv.get_feature_names_out(), columns=["weight"])
-    df_weight.sort_values(by=['weight'])
-    return df_weight
+    stop_words.append('rt')
+    stop_words.append(query_lang.split(' ')[0])
+    return stop_words
