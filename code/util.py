@@ -10,7 +10,9 @@ from dotenv import load_dotenv
 from nltk import RegexpTokenizer
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
+import spacy
 
+nlp = spacy.load("pt_core_news_lg")
 load_dotenv()
 
 TOKEN: str = os.getenv('TOKEN')
@@ -138,18 +140,7 @@ def tokenize(df: pd.DataFrame) -> list[str]:
     return tokens
 
 
-def remove_stopwords(list_words: list[str], query_lang: str) -> list[str]:
-    """
-    Retorna lista de palavras sem as stopwords
-    :param list_words: list[str]
-    :param query_lang: str
-    :return: list[str]
-    """
-    tokens_without_sw = [word for word in list_words if word not in get_stopwords(query_lang)]
-    return tokens_without_sw
-
-
-def generate_value_of_words(df: pd.DataFrame, query_lang: str) -> tuple:
+def generate_value_of_words(df: pd.DataFrame, query_lang) -> tuple:
     """
     Recebe um dataframe com uma coluna chamada ['text'] e retorna a uma tupla com
     as palavras e seus pesos levando em consideração outros atributos do df
@@ -162,9 +153,9 @@ def generate_value_of_words(df: pd.DataFrame, query_lang: str) -> tuple:
     value_word_reply: dict[str: float] = {}
     value_word_quote: dict[str: float] = {}
     for i in df.index:
-        words: list[str] = df['text'][i].split(" ")
-        for word in words:
-            if word not in get_stopwords(query_lang):
+        for word in nlp(df['text'][i]):
+            word = str(word.lemma_)
+            if word in query_lang:
                 if value_word_likes.get(word) is None:
                     value_word_likes[word] = df['like_count'][i]
                     value_word_rt[word] = df['retweet_count'][i]
@@ -173,20 +164,44 @@ def generate_value_of_words(df: pd.DataFrame, query_lang: str) -> tuple:
                 else:
                     rt, likes, reply, quote = value_word_rt.get(word), value_word_likes.get(word), value_word_reply.get(
                         word), value_word_quote.get(word)
-                    value_word_likes[word] = df['like_count'][i] + rt
-                    value_word_rt[word] = df['retweet_count'][i] + likes
+                    value_word_likes[word] = df['like_count'][i] + likes
+                    value_word_rt[word] = df['retweet_count'][i] + rt
                     value_word_reply[word] = df['reply_count'][i] + reply
                     value_word_quote[word] = df['quote_count'][i] + quote
     return value_word_likes, value_word_rt, value_word_reply, value_word_quote
 
 
-def get_stopwords(query_lang: str) -> list:
+def remove_stopwords(list_words: list[str], query_lang: str) -> list[str]:
+    """
+    Retorna lista de palavras sem as stopwords
+    :param list_words: list[str]
+    :param query_lang: str
+    :return: list[str]
+    """
+    tokens_without_sw: list[str] = [word for word in list_words if word not in get_stopwords(query_lang)]
+    return tokens_without_sw
+
+
+def get_stopwords(query_lang: str) -> list[str]:
     """
     Retorna lista de stopwords incluindo o termo de pesquisa
     :param query_lang: str
-    :return: list
+    :return: list[str]
     """
-    stop_words: list = stopwords.words('portuguese')
+    stop_words: list[str] = stopwords.words('portuguese')
     stop_words.append('rt')
+    stop_words.append('pra')
+    stop_words.append('https')
     stop_words.append(query_lang.split(' ')[0])
     return stop_words
+
+
+def generate_lemma(list_words: list[str]) -> list[str]:
+    """
+    :param list_words:list[str]
+    :return: list[str]
+    """
+    list_lemma: list[str] = []
+    for word in nlp(' '.join(list_words)):
+        list_lemma.append(word.lemma_)
+    return list_lemma
