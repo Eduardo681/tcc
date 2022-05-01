@@ -5,3 +5,4 @@ wordcloud~=1.8.1
 matplotlib~=3.5.1
 nltk~=3.7
 spacy~=3.2.3
+dash~=2.3.1
