@@ -1,26 +1,25 @@
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 import nltk
 import spacy.cli
+from sklearn import metrics
+from sklearn.model_selection import cross_val_predict
 
+from train_classifier import modelo, vectorizer, classes, freq_tweets
 from util import *
-import dash
-
-import dash_core_components as dcc
-
-import dash_html_components as html
-
-import pandas as pd
 
 nltk.download('rslp')
 nltk.download('stopwords')
 nltk.download('omw-1.4')
 nltk.download('wordnet')
-spacy.cli.download('pt_core_news_lg')
+# spacy.cli.download('pt_core_news_lg')
 
 # variavel de pesquisa
 query_lang: str = "ifood lang:pt"
 
 # df = generate_data_frame(query_lang)
-df = pd.read_csv("csvs/ifood_2022-04-15_14:20:31.927856.csv")
+df = pd.read_csv("csvs/analise.csv")
 df.info()
 print(df.shape)
 
@@ -64,44 +63,55 @@ df.sort_values("created_at", inplace=True)
 
 app = dash.Dash(__name__)
 
-app.layout = html.Div(
+testes = df['text'].values
+freq_testes = vectorizer.transform(testes)
+teste = modelo.predict(freq_testes)
+df['class'] = teste
+df.to_csv("csvs/resultados.csv")
+df_positive = df.filter("Positivo", axis=0)
+df_negative = df.filter("Negativo", axis=0)
 
-    children=[
 
-        html.H1(children="Analise de dados nos negocios: aplicação na estrategia de marketing digital", ),
+def generate_dash():
+    app.layout = html.Div(
 
-        html.P(
+        children=[
 
-            children="Baseado em dados do twitter",
+            html.H1(children="Analise de dados nos negocios: aplicação na estrategia de marketing digital", ),
 
-        ),
+            html.P(
 
-        dcc.Graph(
+                children="Baseado em dados do twitter",
 
-            figure={
+            ),
 
-                "data": [
+            dcc.Graph(
 
-                    {
+                figure={
 
-                        "x": df_frequency_final['word'],
+                    "data": [
 
-                        "y": df_frequency_final['likes'],
+                        {
 
-                        "type": "bar",
+                            "x": df_frequency_final['word'],
 
-                    },
+                            "y": df_frequency_final['likes'],
 
-                ],
+                            "type": "bar",
 
-                "layout": {"title": "Word vs Likes"},
+                        },
 
-            },
+                    ],
 
-        ),
-    ]
+                    "layout": {"title": "Word vs Likes"},
 
-)
+                },
 
-if __name__ == "__main__":
-    app.run_server(debug=False)
+            ),
+        ]
+
+    )
+
+#
+# if __name__ == "__main__":
+#     app.run_server(debug=False)
