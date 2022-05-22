@@ -2,20 +2,20 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_predict
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
 
-dataset = pd.read_csv('./csvs/train.csv', encoding='utf-8')
-dataset['Text'] = dataset['Text'].fillna("")
-dataset['Classificacao'] = dataset['Classificacao'].fillna("Neutro")
-tweets = dataset['Text'].values
+dataset: pd.DataFrame = pd.read_csv('./csvs/imdb-reviews-pt-br.csv', encoding='utf-8')
+dataset['text_pt'] = dataset['text_pt'].fillna("")
+dataset['sentiment'] = dataset['sentiment'].fillna("")
+tweets: list = dataset['text_pt'].values
 
-classes = dataset['Classificacao'].values
-vectorizer = CountVectorizer(analyzer="word", ngram_range=(1, 2))
-freq_tweets = vectorizer.fit_transform(tweets)
-modelo = MultinomialNB()
+classes: list = dataset['sentiment'].values
+vectorizer: CountVectorizer = CountVectorizer(analyzer="word", ngram_range=(1, 2))
+freq_tweets: list = vectorizer.fit_transform(tweets)
+modelo: BernoulliNB = BernoulliNB()
 modelo.fit(freq_tweets, classes)
 
-resultados = cross_val_predict(modelo, freq_tweets, classes, cv=10)
-metrics.accuracy_score(classes, resultados)
-sentimentos = ["Positivo", "Negativo", "Neutro"]
-print(metrics.classification_report(classes, resultados))
+results: list = cross_val_predict(modelo, freq_tweets, classes, cv=10)
+metrics.accuracy_score(classes, results)
+sentiments: list = ["neg", "pos"]
+print(metrics.classification_report(classes, results))

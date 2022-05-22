@@ -2,3 +2,4 @@ code/.env
 entregas_parciais
 livros
 *.docx
+code/csvs/imdb-reviews-pt-br.csv
