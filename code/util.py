@@ -199,6 +199,7 @@ def get_stopwords(query_lang: str) -> list[str]:
 
 def generate_lemma(list_words: list[str]) -> list[str]:
     """
+    Recebe uma lista de palavras e retorna nova lista, unindo as palavras similares com o seu lemma
     :param list_words:list[str]
     :return: list[str]
     """
