@@ -193,6 +193,7 @@ def get_stopwords(query_lang: str) -> list[str]:
     stop_words: list[str] = stopwords.words('portuguese')
     stop_words.append('rt')
     stop_words.append('pra')
+    stop_words.append('https')
     stop_words.append(query_lang.split(' ')[0])
     return stop_words
 
