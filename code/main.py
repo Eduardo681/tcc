@@ -1,7 +1,7 @@
 import nltk
 from sklearn.feature_extraction.text import CountVectorizer
 
-from train_classifier import modelo, vectorizer
+from train_classifier import model, vectorizer
 from util import *
 
 nltk.download('rslp')
@@ -51,15 +51,12 @@ show_word_cloud(value_of_words[1], "RT")
 show_word_cloud(value_of_words[2], "Reply")
 show_word_cloud(value_of_words[3], "Quotes")
 
+# analise de sentimentos
 text: list = df_pre['text'].values
 freq_text: CountVectorizer = vectorizer.transform(text)
-sentiments: list = modelo.predict(freq_text)
+sentiments: list = model.predict(freq_text)
 df_pre['class'] = sentiments
 df_positive: pd.DataFrame = df_pre[df_pre['class'] == 'pos']
 df_negative: pd.DataFrame = df_pre[df_pre['class'] == 'neg']
 df_negative.to_csv('csvs/negativo.csv')
 df_positive.to_csv('csvs/positivo.csv')
-print("Positivos - ")
-print(df_positive.shape)
-print("Negativos - ")
-print(df_negative.shape)

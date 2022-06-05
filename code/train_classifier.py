@@ -9,12 +9,12 @@ dataset['text_pt'] = dataset['text_pt'].fillna("")
 dataset['sentiment'] = dataset['sentiment'].fillna("")
 text: list = dataset['text_pt'].values
 
-classes: list = dataset['sentiment'].values
+labels: list = dataset['sentiment'].values
 vectorizer: CountVectorizer = CountVectorizer(analyzer="word", ngram_range=(1, 2))
 freq: list = vectorizer.fit_transform(text)
-modelo: BernoulliNB = BernoulliNB()
-modelo.fit(freq, classes)
+model: BernoulliNB = BernoulliNB()
+model.fit(freq, labels)
 
-results: list = cross_val_predict(modelo, freq, classes, cv=10)
-metrics.accuracy_score(classes, results)
-print(metrics.classification_report(classes, results))
+results: list = cross_val_predict(model, freq, labels, cv=10)
+metrics.accuracy_score(labels, results)
+print(metrics.classification_report(labels, results))
