@@ -1,17 +1,13 @@
 import nltk
-import spacy as spacy
 from sklearn.feature_extraction.text import CountVectorizer
 
-
+from train_classifier import modelo, vectorizer
+from util import *
 
 nltk.download('rslp')
 nltk.download('stopwords')
 nltk.download('omw-1.4')
 nltk.download('wordnet')
-spacy.cli.download('pt_core_news_lg')
-from train_classifier import modelo, vectorizer
-from util import *
-
 
 # variavel de pesquisa
 query_lang: str = "ifood lang:pt"
