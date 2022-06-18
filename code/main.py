@@ -55,8 +55,11 @@ show_word_cloud(value_of_words[3], "Quotes")
 text: list = df_pre['text'].values
 freq_text: CountVectorizer = vectorizer.transform(text)
 sentiments: list = model.predict(freq_text)
-df_pre['class'] = sentiments
-df_positive: pd.DataFrame = df_pre[df_pre['class'] == 'pos']
-df_negative: pd.DataFrame = df_pre[df_pre['class'] == 'neg']
-df_negative.to_csv('csvs/negativo.csv')
-df_positive.to_csv('csvs/positivo.csv')
+df_pre = df_pre.assign(sentiment=sentiments)
+df_positive: pd.DataFrame = df_pre[df_pre['sentiment'] == 'pos']
+df_negative: pd.DataFrame = df_pre[df_pre['sentiment'] == 'neg']
+countAll = df_pre.shape[0]
+countPositive = df_positive.shape[0]
+countNegative = df_negative.shape[0]
+print(f'Positivos: {countPositive} - {(countPositive / countAll):.2%} ')
+print(f'Negativos: {countNegative} - {(countNegative / countAll):.2%} ')

@@ -12,7 +12,7 @@ from nltk.corpus import stopwords
 from wordcloud import WordCloud
 import spacy
 
-spacy.cli.download('pt_core_news_lg')
+#spacy.cli.download('pt_core_news_lg')
 nlp = spacy.load("pt_core_news_lg")
 
 load_dotenv()
