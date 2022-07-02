@@ -63,3 +63,5 @@ countPositive = df_positive.shape[0]
 countNegative = df_negative.shape[0]
 print(f'Positivos: {countPositive} - {(countPositive / countAll):.2%} ')
 print(f'Negativos: {countNegative} - {(countNegative / countAll):.2%} ')
+df_pre.to_csv(f"csvs/final.csv", ",")
+df_frequency_final.to_csv(f"csvs/frequencias.csv")

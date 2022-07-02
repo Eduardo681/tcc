@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_predict
 from sklearn.naive_bayes import BernoulliNB
 
-dataset: pd.DataFrame = pd.read_csv('csvs/treino_sentimentos.csv', encoding='utf-8')
+dataset: pd.DataFrame = pd.read_csv('csvs/treino-sentimentos.csv', encoding='utf-8')
 dataset['text_pt'] = dataset['text_pt'].fillna("")
 dataset['sentiment'] = dataset['sentiment'].fillna("")
 text: list = dataset['text_pt'].values
