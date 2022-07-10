@@ -1,50 +1,89 @@
-from dash import Dash, html, dcc
-import plotly.express as px
+import dash_bootstrap_components as dbc
 import pandas as pd
+from dash import Dash, dash_table, dcc, html
+from dash.dependencies import Input, Output
 
+df = pd.read_csv('../csvs/final.csv')
+df = df.drop(columns=['user_id'])
+df.columns = ['id', 'Usuário', 'Publicação', 'Data', 'Compartilhamento', 'Comentários', 'Likes', 'Citações',
+              'Sentimento']
+df.set_index('id', inplace=True, drop=False)
 
-def generate_table(dataframe, max_rows=10):
-    return html.Table([
-        html.Thead(
-            html.Tr([html.Th(col) for col in dataframe.columns])
-        ),
-        html.Tbody([
-            html.Tr([
-                html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
-            ]) for i in range(min(len(dataframe), max_rows))
-        ])
-    ])
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-
-df: pd.DataFrame = pd.read_csv("../csvs/analise.csv")
-
-app = Dash(__name__)
-
-app.layout = html.Div(children=[
-    html.H1(children='IFood Marketing Dash'),
-
-    html.Div(children='''
-
-    '''),
-
-    html.H4(children='US Agriculture Exports (2011)'),
-    generate_table(df),
-
-    html.Div(children=[
-        html.Label('Dropdown'),
-        dcc.Dropdown(['New York City', 'Montréal', 'San Francisco'], 'Montréal'),
-
-        html.Br(),
-        html.Label('Multi-Select Dropdown'),
-        dcc.Dropdown(['New York City', 'Montréal', 'San Francisco'],
-                     ['Montréal', 'San Francisco'],
-                     multi=True),
-
-        html.Br(),
-        html.Label('Radio Items'),
-        dcc.RadioItems(['New York City', 'Montréal', 'San Francisco'], 'Montréal'),
-    ], style={'padding': 10, 'flex': 1}),
+table = html.Div([
+    dash_table.DataTable(
+        style_data={
+            'whiteSpace': 'normal',
+            'color': 'black',
+            'backgroundColor': 'white'
+        },
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': 'rgb(220, 220, 220)',
+            }
+        ],
+        style_header={
+            'backgroundColor': 'white',
+            'fontWeight': 'bold'
+        },
+        css=[{
+            'selector': '.dash-spreadsheet td div',
+            'rule': '''
+                line-height: 15px;
+                max-height: 30px; min-height: 30px; height: 30px;
+                display: block;
+                overflow-y: hidden;
+            '''
+        }],
+        tooltip_data=[
+            {
+                column: {'value': str(value), 'type': 'markdown'}
+                for column, value in row.items()
+            } for row in df.to_dict('records')
+        ],
+        tooltip_duration=None,
+        style_cell={'textAlign': 'left'},
+        id='datatable-row-ids',
+        columns=[
+            {'name': i, 'id': i, 'deletable': True} for i in df.columns
+        ],
+        data=df.to_dict('records'),
+        filter_action="native",
+        sort_action="native",
+        sort_mode='multi',
+        selected_rows=[],
+        page_action='native',
+        page_current=0,
+        page_size=10,
+    ),
+    html.Div(id='datatable-row-ids-container')
 ])
+
+dropdown = html.Div([
+    dcc.Dropdown(['Likes', 'Compartilhamentos', 'Comentários', ''], 'NYC', id='dropdown'),
+    html.Div(id='dd-output-container')
+])
+
+
+@app.callback(
+    Output('dd-output-container', 'children'),
+    Input('dropdown', 'value')
+)
+def update_output(value):
+    return html.Img(
+        src=
+    )
+
+
+app.layout = dbc.Container(
+    children=[
+        html.H1("Ifood Dashboard"),
+        dropdown,
+        table,
+    ]
+)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

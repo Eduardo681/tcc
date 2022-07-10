@@ -1,4 +1,4 @@
-,user,user_id,text,created_at,retweet_count,reply_count,like_count,quote_count,sentiment
+id,user,user_id,text,created_at,retweet_count,reply_count,like_count,quote_count,sentiment
 0,evy,2502434975,não sei o que é pior esperar ifood ou correios,2022-04-15 14:20:28+00:00,0,0,1,0,neg
 1,Jeftte Soares 🏴🇨🇺🇵🇸,55008203,@revistapiaui @fernandobarros @zerotoledo @thais_bilenky uma pena que o foro tenha se curvado ao patrocinador e não trate sobre o @ifood https t co gv bun nxp,2022-04-15 14:19:47+00:00,0,0,1,0,pos
 2,Rafael Ângelo #ForaMarcosBraz 🔴⚫,4076965828,@maurocezar @cahemota @ivanraupp @ericfaria esse entregador de ifood só pode está de sacanagem com o torcedor dizendo que é maior o flamengo deveria embrulhar ele é mandar pelo mercadolivre pro manchester united tnc mermão saudações rubro negras 🔴⚫🖕🏾,2022-04-15 14:19:29+00:00,0,0,19,0,neg
