@@ -47,9 +47,9 @@ df_frequency_final = pd.merge(df_frequency_final, df_quotes, on='word', how='out
 
 # nuvens de palavras
 show_word_cloud(value_of_words[0], "Likes")
-show_word_cloud(value_of_words[1], "RT")
-show_word_cloud(value_of_words[2], "Reply")
-show_word_cloud(value_of_words[3], "Quotes")
+show_word_cloud(value_of_words[1], "Compartilhamentos")
+show_word_cloud(value_of_words[2], "Comentários")
+show_word_cloud(value_of_words[3], "Citações")
 
 # analise de sentimentos
 text: list = df_pre['text'].values
@@ -63,5 +63,14 @@ countPositive = df_positive.shape[0]
 countNegative = df_negative.shape[0]
 print(f'Positivos: {countPositive} - {(countPositive / countAll):.2%} ')
 print(f'Negativos: {countNegative} - {(countNegative / countAll):.2%} ')
-df_pre.to_csv(f"csvs/final.csv", ",")
+
 df_frequency_final.to_csv(f"csvs/frequencias.csv")
+
+df_pre.columns = ['id', 'tweet_id', 'Usuário', 'Publicação', 'Data', 'Compartilhamentos', 'Comentários', 'Likes',
+                  'Citações', 'Sentimento']
+for i in df_pre.index:
+    test = df[df['id_tweet'] == (df_pre['tweet_id'][i])]
+    df_pre['Publicação'][i] = test['text'].values[0]
+
+df_pre.pop("id")
+df_pre.to_csv('csvs/final.csv')

@@ -1,12 +1,13 @@
+import os
+
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Dash, dash_table, dcc, html
 from dash.dependencies import Input, Output
 
 df = pd.read_csv('../csvs/final.csv')
-df = df.drop(columns=['user_id'])
-df.columns = ['id', 'Usuário', 'Publicação', 'Data', 'Compartilhamento', 'Comentários', 'Likes', 'Citações',
-              'Sentimento']
+df.columns = ['id', 'tweet_id', 'Usuário', 'Publicação', 'Data', 'Compartilhamentos', 'Comentários', 'Likes',
+                  'Citações', 'Sentimento']
 df.set_index('id', inplace=True, drop=False)
 
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -62,7 +63,7 @@ table = html.Div([
 ])
 
 dropdown = html.Div([
-    dcc.Dropdown(['Likes', 'Compartilhamentos', 'Comentários', ''], 'NYC', id='dropdown'),
+    dcc.Dropdown(['Likes', 'Compartilhamentos', 'Comentários', 'Citações'], 'Likes', id='dropdown'),
     html.Div(id='dd-output-container')
 ])
 
@@ -73,7 +74,7 @@ dropdown = html.Div([
 )
 def update_output(value):
     return html.Img(
-        src=
+        src=app.get_asset_url(value+'.png')
     )
 
 

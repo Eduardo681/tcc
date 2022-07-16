@@ -12,7 +12,7 @@ from nltk.corpus import stopwords
 from wordcloud import WordCloud
 import spacy
 
-#spacy.cli.download('pt_core_news_lg')
+# spacy.cli.download('pt_core_news_lg')
 nlp = spacy.load("pt_core_news_lg")
 
 load_dotenv()
@@ -35,7 +35,7 @@ def get_data(query: str, end_time: datetime, *args) -> tweepy.client.Response:
     tweets: tweepy.client.Response = client.search_recent_tweets(query=query,
                                                                  end_time=end_time,
                                                                  tweet_fields=["created_at", "text", "source",
-                                                                               "public_metrics"],
+                                                                               "public_metrics", "id"],
                                                                  user_fields=["name", "username", "location",
                                                                               "verified", "description"],
                                                                  next_token=args,
@@ -62,8 +62,8 @@ def generate_data_frame(query_lang: str, limit: int = 10000) -> pd.DataFrame:
     while len(data) <= limit:
         for user, tweet in zip(users, response.data):
             row: dict = {
+                "id_tweet": tweet.id,
                 "user": user.name,
-                "user_id": user.id,
                 "text": tweet.text,
                 "created_at": tweet.created_at,
                 "retweet_count": tweet.public_metrics["retweet_count"],
@@ -102,6 +102,7 @@ def show_word_cloud(value_frequency: dict, text: str) -> None:
     plt.axis("off")
     plt.tight_layout(w_pad=0)
     plt.show()
+    wordcloud.to_file("dash/assets/" + text + ".png")
 
 
 def pre_processing(data_frame: pd.DataFrame) -> pd.DataFrame:
@@ -126,7 +127,7 @@ def pre_processing(data_frame: pd.DataFrame) -> pd.DataFrame:
     df = df.drop_duplicates(subset=["text"])
 
     # remove coluna id
-    df.pop("id")
+    df.drop(df.columns[df.columns.str.contains('unnamed', case=False)], axis=1)
 
     return df
 
