@@ -1,0 +1,25 @@
+.card {
+    border-radius: 20px 0 20px 0;
+    box-shadow: 3px 3px 15px 5px rgba(0,0,0,0.2);
+    padding: 15px;
+}
+
+.box {
+    position: relative;
+    border: none;
+    width: 18rem;
+    height: 180px;
+}
+
+.box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: 20px 0 20px 0;
+    background: linear-gradient(190deg, #6930C3, #56CCE0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}

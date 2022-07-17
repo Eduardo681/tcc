@@ -19,6 +19,27 @@ df.set_index('id', inplace=True, drop=False)
 
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+
+def generate_card(title, total, totalAbsoluto):
+    return dbc.Card(
+        dbc.CardBody(
+            [
+                html.H4(title, className="card-title"),
+                html.H6(total + " em " + totalAbsoluto + " postagens", className="card-subtitle"),
+            ]
+        ),
+        class_name="box",
+    )
+
+
+def generate_img(source):
+    return html.Img(
+        src=app.get_asset_url(source + '.png'),
+        width=400,
+        height=400
+    )
+
+
 table = html.Div([
     dash_table.DataTable(
         style_data={
@@ -73,12 +94,6 @@ table = html.Div([
     html.Div(id='datatable-row-ids-container')
 ], style={"margin-top": "10px"})
 
-dropdown = html.Div([
-    dcc.Dropdown(['Likes', 'Compartilhamentos', 'Comentários', 'Citações'], 'Likes', id='dropdown',
-                 style={"background": "white", "color": "black", "border-radius": ".25rem"}, ),
-    html.Div(id='dd-output-container', style={"margin-top": "10px"})
-])
-
 cardPositivos = dbc.Card(
     dbc.CardBody(
         [
@@ -86,8 +101,7 @@ cardPositivos = dbc.Card(
             html.H6("4000 de 8000 com avaliação positiva", className="card-subtitle"),
         ]
     ),
-    color="success",
-    style={"width": "18rem", "color": "white"},
+    style={"width": "350px", "color": "white", "background": "#1BBD8C", "height": "230px"},
 )
 
 cardNegativos = dbc.Card(
@@ -98,7 +112,7 @@ cardNegativos = dbc.Card(
         ]
     ),
     color="danger",
-    style={"width": "18rem", "color": "white"},
+    style={"width": "350px", "color": "white", "background": "#EC3B50", "height": "230px"},
 )
 
 cardsSentimentos = html.Div(
@@ -106,7 +120,7 @@ cardsSentimentos = html.Div(
     style={"display": "flex", "justify-content": "space-between"}
 )
 
-classifier = html.Div([
+classifier = dbc.Card([
     dcc.Input(
         id="input",
         type='text',
@@ -114,25 +128,36 @@ classifier = html.Div([
         className="form-control"
     ),
     html.Div(id="output")],
-    style={"margin-top": "50px"}
+    style={"margin-top": "30px", "height": "250px"}
+)
+
+cardsTotais = dbc.Row(
+    children=[
+        generate_card("Likes", "8000", "5000"), generate_card("Compartilhamentos", "8000", "5000"),
+        generate_card("Comentários", "8000", "5000"), generate_card("Citações", "8000", "5000")
+    ], style={"justify-content": "space-between", "background": "transparent"}
 )
 
 column = html.Div(
     children=[cardsSentimentos, classifier],
-    style={"display": "flex", "flex-direction": "column", "width": "60%"}
+    style={"display": "flex", "flex-direction": "column"}
 )
 
-
-@app.callback(
-    Output('dd-output-container', 'children'),
-    Input('dropdown', 'value')
-)
-def update_output(value):
-    return html.Img(
-        src=app.get_asset_url(value + '.png'),
-        width=400,
-        height=400
-    )
+tabs = dbc.Col(
+    dbc.Card(
+        dbc.Tabs(
+            [
+                dbc.Tab(generate_img("Likes"), label="Likes", activeTabClassName="fw-bold fst-italic",
+                        label_style={"color": "#6930C3", "background": "transparent", "border": "none"}, ),
+                dbc.Tab(generate_img("Comentários"), label="Comentários", activeTabClassName="fw-bold fst-italic",
+                        label_style={"color": "#6930C3", "background": "transparent", "border": "none"}),
+                dbc.Tab(generate_img("Compartilhamentos"), label="Compartilhamentos",
+                        activeTabClassName="fw-bold fst-italic",
+                        label_style={"color": "#6930C3", "background": "transparent", "border": "none"}),
+                dbc.Tab(generate_img("Citações"), label="Citações", activeTabClassName="fw-bold fst-italic",
+                        label_style={"color": "#6930C3", "background": "transparent", "border": "none"})
+            ],
+        )), style={"margin-left": "10px"})
 
 
 @app.callback(
@@ -140,18 +165,17 @@ def update_output(value):
     Input("input", "value"),
 )
 def update_output(value):
-    returnSentiment = None
     if value is not None and len(value) > 5:
         lista = [value]
         freq_text: CountVectorizer = vectorizer.transform(lista)
         sentiments = model.predict(freq_text)
         if sentiments[0] == 'pos':
-            returnSentiment = 'Frase classificada como: positiva'
+            return_sentiment = 'Frase classificada como: positiva'
         else:
-            returnSentiment = 'Frase classificada como: negativa'
+            return_sentiment = 'Frase classificada como: negativa'
     else:
-        returnSentiment = 'Digite mais caracteres para obter a classificação do texto'
-    return html.H3(returnSentiment)
+        return_sentiment = 'Digite mais caracteres para obter a classificação do texto'
+    return html.H3(return_sentiment)
 
 
 app.layout = html.Div(dbc.Container(
@@ -159,13 +183,14 @@ app.layout = html.Div(dbc.Container(
         html.H1("Dashboard"),
         html.Div(
             children=[
-                column, dropdown
-            ], style={"display": "flex", "justify-content": "space-between"}
+                column, tabs
+            ], style={"display": "flex"}
         ),
         html.Hr(),
-        table,
+        cardsTotais,
+        html.Hr(),
     ]
-), style={"background": "#0e1012", "color": "#fff"})
+), style={"background": "#F5F5F5"})
 
 if __name__ == '__main__':
     app.run_server(debug=True)
