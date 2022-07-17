@@ -3,6 +3,8 @@ from sklearn import metrics
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_predict
 from sklearn.naive_bayes import BernoulliNB
+import pickle
+
 
 dataset: pd.DataFrame = pd.read_csv('csvs/treino-sentimentos.csv', encoding='utf-8')
 dataset['text_pt'] = dataset['text_pt'].fillna("")
@@ -18,3 +20,9 @@ model.fit(freq, labels)
 results: list = cross_val_predict(model, freq, labels, cv=10)
 metrics.accuracy_score(labels, results)
 print(metrics.classification_report(labels, results))
+
+with open('vector.pkl', 'wb') as file:
+    pickle.dump(vectorizer, file)
+
+with open('classifier.pkl', 'wb') as file:
+    pickle.dump(model, file)
