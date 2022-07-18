@@ -33,11 +33,11 @@ def generate_card(title, total, totalAbsoluto):
 
 
 def generate_img(source):
-    return html.Img(
+    return html.Div(html.Img(
         src=app.get_asset_url(source + '.png'),
         width=400,
         height=400
-    )
+    ), style={"display": "flex", "justify-content": "center"})
 
 
 table = html.Div([
@@ -101,7 +101,7 @@ cardPositivos = dbc.Card(
             html.H6("4000 de 8000 com avaliação positiva", className="card-subtitle"),
         ]
     ),
-    style={"width": "350px", "color": "white", "background": "#1BBD8C", "height": "230px"},
+    style={"width": "300px", "color": "white", "background": "#1BBD8C", "height": "230px"},
 )
 
 cardNegativos = dbc.Card(
@@ -112,7 +112,7 @@ cardNegativos = dbc.Card(
         ]
     ),
     color="danger",
-    style={"width": "350px", "color": "white", "background": "#EC3B50", "height": "230px"},
+    style={"width": "300px", "color": "white", "background": "#EC3B50", "height": "230px"},
 )
 
 cardsSentimentos = html.Div(
@@ -135,7 +135,7 @@ classifier = dbc.Card([
         className="form__group"
     ),
     html.Div(id="output")],
-    style={"margin-top": "30px", "height": "250px", "padding": "25px"}
+    style={"margin-top": "30px", "height": "250px", "padding": "25px", "width": "700px"}
 )
 
 cardsTotais = dbc.Row(
@@ -164,7 +164,7 @@ tabs = dbc.Col(
                 dbc.Tab(generate_img("Citações"), label="Citações", activeTabClassName="fw-bold fst-italic",
                         label_style={"color": "#6930C3", "background": "transparent", "border": "none"})
             ],
-        )), style={"margin-left": "10px"})
+        )), style={"margin-left": "20px", "justify-content": "center"})
 
 
 @app.callback(
@@ -182,7 +182,10 @@ def update_output(value):
             return_sentiment = 'Frase classificada como: negativa'
     else:
         return_sentiment = 'Digite mais caracteres para obter a classificação do texto'
-    return html.H3(return_sentiment)
+    return html.Div(
+        html.H3(
+        return_sentiment
+    ), style={"margin-top": "20px"})
 
 
 app.layout = html.Div(dbc.Container(

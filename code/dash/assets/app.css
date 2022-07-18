@@ -83,3 +83,9 @@
 .form__field:required:invalid {
     box-shadow: none;
 }
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: center;
+}

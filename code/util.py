@@ -92,7 +92,7 @@ def show_word_cloud(value_frequency: dict, text: str) -> None:
     :return: None
     """
     wordcloud = WordCloud(width=1000, height=1000,
-                          background_color='#0e1012',
+                          background_color='white',
                           stopwords=None,
                           min_font_size=12).generate_from_frequencies(value_frequency)
 
