@@ -1,6 +1,6 @@
 .card {
     border-radius: 20px 0 20px 0;
-    box-shadow: 3px 3px 15px 5px rgba(0,0,0,0.2);
+    box-shadow: 3px 3px 15px 5px rgba(0, 0, 0, 0.2);
     padding: 15px;
 }
 
@@ -22,4 +22,64 @@
     linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+}
+
+
+.form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+}
+
+.form__field {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 1.3rem;
+    color: black;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 25px;
+}
+
+.form__field::placeholder {
+    color: transparent;
+}
+
+.form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #9b9b9b;
+}
+
+.form__field:focus {
+    font-weight: 700;
+    border-width: 2px;
+    border-image: linear-gradient(45deg, #6930C3, #56CCE0);
+    border-image-slice: 1;
+}
+
+.form__field ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #c3c3c3;
+    font-weight: 700;
+}
+
+.form__field:required:invalid {
+    box-shadow: none;
 }

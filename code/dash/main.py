@@ -121,14 +121,21 @@ cardsSentimentos = html.Div(
 )
 
 classifier = dbc.Card([
-    dcc.Input(
-        id="input",
-        type='text',
-        placeholder="Digite frase a ser classificada",
-        className="form-control"
+    html.Div(
+        [
+            dcc.Input(
+                id="input",
+                type='text',
+                placeholder="Digite frase a ser classificada",
+                className="form__field"
+            ),
+            html.Label(children=[
+                "Texto a ser classificado"
+            ], className="form__label", htmlFor="input")],
+        className="form__group"
     ),
     html.Div(id="output")],
-    style={"margin-top": "30px", "height": "250px"}
+    style={"margin-top": "30px", "height": "250px", "padding": "25px"}
 )
 
 cardsTotais = dbc.Row(
