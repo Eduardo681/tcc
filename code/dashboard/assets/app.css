@@ -1,14 +1,15 @@
 .card {
     border-radius: 20px 0 20px 0;
-    box-shadow: 3px 3px 15px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 15px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
 }
 
 .box {
     position: relative;
     border: none;
-    width: 18rem;
+    width: 320px;
     height: 180px;
+    text-align: center;
 }
 
 .box::before {
@@ -88,4 +89,71 @@
     border-bottom: 1px solid #dee2e6;
     display: flex;
     justify-content: center;
+}
+
+.img {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.card-perc {
+    width: 340px;
+    color: white;
+    height: 230px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-input {
+    margin-top: 20px;
+    height: 250px;
+    padding: 25px;
+    width: 700px;
+}
+
+.aside {
+    position: absolute;
+    background: linear-gradient(180deg, #6930C3, #56CCE0);
+    width: 150px;
+    height: 100vh;
+    border-radius: 0 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-page {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-size: 2rem;
+}
+
+i {
+    margin-bottom: 15px;
+}
+
+.icon {
+    background: -webkit-linear-gradient(270deg, #6930C3, #56CCE0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h6 {
+    margin-top: 15px;
 }
