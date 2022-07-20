@@ -14,14 +14,12 @@ app.layout = html.Div(
                     href="/",
                     className="nav-page",
                     children=[
-                        # html.Img(
-                        #     className="icon",
-                        #     src=get_asset_url("icone-bi.png"),
-                        #     width=60,
-                        #     height=60
-                        # )
-                        html.I(
-                            className="fa-solid fa-chart-line fa-lg"
+                        html.Img(
+                            className="icon",
+                            src=get_asset_url("logo.png"),
+                            width=100,
+                            height=100,
+                            style={"border-radius": "100%"}
                         )
                     ], style={"position": "absolute", "top": "100px"}
                 ),
@@ -31,7 +29,7 @@ app.layout = html.Div(
                     children=[
                         html.Img(
                             className="icon",
-                            src=get_asset_url("icone-bi.png"),
+                            src=get_asset_url("bi.svg"),
                             width=60,
                             height=60
                         )
@@ -43,7 +41,7 @@ app.layout = html.Div(
                     children=[
                         html.Img(
                             className="icon",
-                            src=get_asset_url("table.png"),
+                            src=get_asset_url("table.svg"),
                             width=60,
                             height=60
                         )

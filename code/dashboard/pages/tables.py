@@ -29,6 +29,12 @@ def generate_table(df):
             style_data={
                 'whiteSpace': 'normal',
             },
+            style_data_conditional=[
+                {
+                    'if': {'row_index': 'odd'},
+                    'backgroundColor': 'rgb(220, 220, 220)',
+                }
+            ],
             css=[{
                 'selector': '.dash-spreadsheet td div',
                 'rule': '''
