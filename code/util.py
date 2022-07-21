@@ -102,7 +102,7 @@ def show_word_cloud(value_frequency: dict, text: str) -> None:
     plt.axis("off")
     plt.tight_layout(w_pad=0)
     plt.show()
-    wordcloud.to_file("dash/assets/" + text + ".png")
+    wordcloud.to_file("dashboard/assets/" + text + ".png")
 
 
 def pre_processing(data_frame: pd.DataFrame) -> pd.DataFrame:
