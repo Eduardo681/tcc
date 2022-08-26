@@ -47,8 +47,8 @@ dicionario de dados resultante da mineração de dados:
 2022-08-26 19-28-26](https://user-images.githubusercontent.com/50171354/186998874-29031580-35f2-48ba-b817-af82e0116236.png)
 
 #### Tela 02
+![Screenshot from 2022-08-26 19-28-39](https://user-images.githubusercontent.com/50171354/186999424-70943ac6-5264-44e3-a7da-6ec4588c852e.png)
 
-![Uploading Screenshot from 2022-08-26 19-28-39.png…]()
 
 ### Analise
 Em análise dos resultados obtidos com a o processo realizado utilizando a empresa IFood destaca-se os seguintes pontos:
