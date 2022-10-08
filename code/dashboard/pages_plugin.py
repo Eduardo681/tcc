@@ -10,6 +10,8 @@ from os.path import isfile, join
 from textwrap import dedent
 from urllib.parse import parse_qs
 
+if not os.path.exists('pages'):
+    raise Exception('A folder called `pages` does not exist.')
 
 _ID_CONTENT = '_pages_plugin_content'
 _ID_LOCATION = '_pages_plugin_location'
