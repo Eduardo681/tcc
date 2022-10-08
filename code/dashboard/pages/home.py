@@ -2,11 +2,9 @@ import pickle
 
 import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import Dash, dash_table, dcc, html, get_asset_url, callback
+from dash import dcc, html, get_asset_url, callback
 from dash.dependencies import Input, Output
 from sklearn.feature_extraction.text import CountVectorizer
-
-from dashboard.pages_plugin import register_page
 
 with open('../classifier.pkl', 'rb') as f:
     model = pickle.load(f)
@@ -14,11 +12,6 @@ with open('../classifier.pkl', 'rb') as f:
 with open('../vector.pkl', 'rb') as f:
     vectorizer = pickle.load(f)
 
-register_page(
-    __name__,
-    path='/',
-    title='Analytics App'
-)
 
 df = pd.read_csv('../csvs/final.csv')
 df.columns = ['id', 'tweet_id', 'Usuário', 'Publicação', 'Data', 'Compartilhamentos', 'Comentários', 'Likes',

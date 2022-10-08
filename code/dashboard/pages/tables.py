@@ -7,12 +7,6 @@ import dash_bootstrap_components as dbc
 
 from dash import dash_table
 
-register_page(
-    __name__,
-    path='/tables',
-    title='Analytics App'
-)
-
 df_frequencia = pd.read_csv('../csvs/frequencias.csv')
 df = pd.read_csv('../csvs/final.csv')
 df.columns = ['id', 'tweet_id', 'Usuário', 'Publicação', 'Data', 'Compartilhamentos', 'Comentários', 'Likes',
