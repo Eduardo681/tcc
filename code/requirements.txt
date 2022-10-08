@@ -7,3 +7,4 @@ nltk~=3.7
 spacy~=3.2.3
 dash~=2.3.1
 scikit-learn~=1.0.2
+dash_bootstrap_components~=1.2.1
