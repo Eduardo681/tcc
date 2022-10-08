@@ -6,10 +6,10 @@ from dash import dcc, html, get_asset_url, callback
 from dash.dependencies import Input, Output
 from sklearn.feature_extraction.text import CountVectorizer
 
-with open(get_asset_url('classifier.pkl'), 'rb') as f:
+with open('../classifier.pkl', 'rb') as f:
     model = pickle.load(f)
 
-with open(get_asset_url('vector.pkl'), 'rb') as f:
+with open('../vector.pkl', 'rb') as f:
     vectorizer = pickle.load(f)
 
 

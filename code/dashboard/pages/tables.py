@@ -1,7 +1,5 @@
 import pandas as pd
-from dash import html, get_asset_url
-
-from dashboard.pages_plugin import register_page
+from dash import html
 
 import dash_bootstrap_components as dbc
 
