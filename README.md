@@ -1,4 +1,10 @@
-﻿# Uso da análise de dados em cenários empresariais: Incrementado à Estratégia de Marketing Digital
+﻿
+# Uso da análise de dados em cenários empresariais: Incrementado à Estratégia de Marketing Digital
+
+# Documentos finais
+https://drive.google.com/drive/folders/1U9of3Xb72RIVhEc8GMs5yS1HMAbPTETh?usp=drive_link
+
+# Introdução
 
 O perfil do consumidor mudou com a disseminação da internet e redes sociais, a opinião sobre uma marca ou produto deixou
 de levar em consideração somente o serviço oferecido, valorizando principalmente a experiência de uso e identificação
